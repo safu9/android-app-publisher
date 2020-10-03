@@ -11,33 +11,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Set up Go 1.13
+    - name: Check out
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: ^1.13
-      id: go
+        go-version: 1.13
 
-    - name: Check out code
-      uses: actions/checkout@v2
-
-    - name: Get dependencies
-      run: go get -v -t -d ./...
-
-    - name: Build
-      run: go build -v .
-
-#     - name: Test
-#       run: go test -v .
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v1
+    - name: Run GoReleaser
+      uses: goreleaser/goreleaser-action@v2
       with:
-        name: build
-        path: android-app-publisher
-
-    - name: Release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: android-app-publisher
+        version: latest
+        args: release --rm-dist
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
