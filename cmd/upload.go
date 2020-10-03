@@ -18,7 +18,7 @@ import (
 // https://github.com/googleapis/google-api-go-client
 
 var packageName string
-var serviceAccount string
+var credentialsFile string
 
 var cmdUpload = &cobra.Command{
 	Use:   "upload [file]",
@@ -39,7 +39,7 @@ var cmdUpload = &cobra.Command{
 
 func init() {
 	cmdUpload.Flags().StringVarP(&packageName, "package", "p", "", "Package name of app")
-	cmdUpload.Flags().StringVarP(&serviceAccount, "credential", "c", "", "Service account file")
+	cmdUpload.Flags().StringVarP(&credentialsFile, "credentials", "c", "", "Service account credentials file")
 
 	err := cmdUpload.MarkFlagRequired("package")
 	if err != nil {
@@ -53,8 +53,8 @@ func init() {
 func upload(filename string) error {
 	ctx := context.Background()
 
-	if serviceAccount == "" {
-		serviceAccount = os.Getenv("ANDROID-APP-UPLOADER-CREDENTIAL")
+	if credentialsFile == "" {
+		credentialsFile = os.Getenv("ANDROID-APP-UPLOADER-CREDENTIALS")
 	}
 
 	// client := new(http.Client)
@@ -62,7 +62,7 @@ func upload(filename string) error {
 
 	// Create the AndroidPublisherService
 	options := []option.ClientOption{
-		option.WithCredentialsFile(serviceAccount),
+		option.WithCredentialsFile(credentialsFile),
 		option.WithScopes(androidpublisher.AndroidpublisherScope),
 		// option.WithHTTPClient(client),
 	}
