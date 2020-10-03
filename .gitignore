@@ -15,4 +15,5 @@
 # vendor/
 
 # Build output
+build/
 android-app-publisher
