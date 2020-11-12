@@ -54,7 +54,7 @@ func upload(filename string) error {
 	ctx := context.Background()
 
 	if credentialsFile == "" {
-		credentialsFile = os.Getenv("ANDROID-APP-UPLOADER-CREDENTIALS")
+		credentialsFile = os.Getenv("ANDROID_APP_UPLOADER_CREDENTIALS")
 	}
 
 	// client := new(http.Client)
