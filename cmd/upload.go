@@ -19,6 +19,7 @@ import (
 
 var packageName string
 var credentialsFile string
+var track string
 
 var cmdUpload = &cobra.Command{
 	Use:   "upload [file]",
@@ -40,6 +41,7 @@ var cmdUpload = &cobra.Command{
 func init() {
 	cmdUpload.Flags().StringVarP(&packageName, "package", "p", "", "Package name of app")
 	cmdUpload.Flags().StringVarP(&credentialsFile, "credentials", "c", "", "Service account credentials file")
+	cmdUpload.Flags().StringVarP(&track, "track", "t", "production", "Track to upload app\n\"production\", \"alpha\", \"beta\" or \"internal\"")
 
 	err := cmdUpload.MarkFlagRequired("package")
 	if err != nil {
@@ -91,7 +93,6 @@ func upload(filename string) error {
 	}
 
 	// Assign apk to production track
-	track := "production" // "alpha", "beta", "internal" or "production"
 	_, err = publisherService.Edits.Tracks.Update(packageName, edit.Id, track, &androidpublisher.Track{
 		Releases: []*androidpublisher.TrackRelease{
 			{VersionCodes: []int64{bundle.VersionCode}},
