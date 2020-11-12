@@ -11,7 +11,7 @@ builds:
       - darwin
 archives:
   - replacements:
-      386: i386
+      386: x86
       amd64: x86_64
     format_overrides:
       - goos: windows
