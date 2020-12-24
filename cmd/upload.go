@@ -105,8 +105,8 @@ func upload(filename string) error {
 		return err
 	}
 
-	// Commit changes for edit (publish)
-	// publisherService.Edits.Commit(packageName, edit.Id)
+	// Commit changes for edit
+	publisherService.Edits.Commit(packageName, edit.Id)
 
 	return nil
 }
