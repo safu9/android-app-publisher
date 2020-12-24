@@ -2,8 +2,10 @@ package cmd
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 	"google.golang.org/api/androidpublisher/v3"
@@ -86,17 +88,33 @@ func upload(filename string) error {
 	}
 	defer file.Close()
 
+	var versionCode int64
+
 	// Upload new apk to developer console
-	bundle, err := publisherService.Edits.Bundles.Upload(packageName, edit.Id).Media(file, googleapi.ContentType("application/octet-stream")).Do()
-	if err != nil {
-		return err
+	switch filepath.Ext(filename) {
+	case ".apk":
+		apk, err := publisherService.Edits.Apks.Upload(packageName, edit.Id).Media(file, googleapi.ContentType("application/octet-stream")).Do()
+		if err != nil {
+			return err
+		}
+		versionCode = apk.VersionCode
+
+	case ".aab":
+		bundle, err := publisherService.Edits.Bundles.Upload(packageName, edit.Id).Media(file, googleapi.ContentType("application/octet-stream")).Do()
+		if err != nil {
+			return err
+		}
+		versionCode = bundle.VersionCode
+
+	default:
+		return errors.New("This file type is not supported.")
 	}
 
 	// Assign apk to production track
 	_, err = publisherService.Edits.Tracks.Update(packageName, edit.Id, track, &androidpublisher.Track{
 		Releases: []*androidpublisher.TrackRelease{
 			{
-				VersionCodes: []int64{bundle.VersionCode},
+				VersionCodes: []int64{versionCode},
 				Status:       "draft", // "draft", "inProgress", "halted" or "completed"
 			},
 		},
