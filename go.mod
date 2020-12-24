@@ -4,5 +4,5 @@ go 1.14
 
 require (
 	github.com/spf13/cobra v1.1.1
-	google.golang.org/api v0.35.0
+	google.golang.org/api v0.36.0
 )
