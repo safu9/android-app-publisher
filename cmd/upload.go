@@ -106,7 +106,10 @@ func upload(filename string) error {
 	}
 
 	// Commit changes for edit
-	publisherService.Edits.Commit(packageName, edit.Id)
+	_, err = publisherService.Edits.Commit(packageName, edit.Id).Do()
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
