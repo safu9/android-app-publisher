@@ -95,7 +95,10 @@ func upload(filename string) error {
 	// Assign apk to production track
 	_, err = publisherService.Edits.Tracks.Update(packageName, edit.Id, track, &androidpublisher.Track{
 		Releases: []*androidpublisher.TrackRelease{
-			{VersionCodes: []int64{bundle.VersionCode}},
+			{
+				VersionCodes: []int64{bundle.VersionCode},
+				Status:       "draft", // "draft", "inProgress", "halted" or "completed"
+			},
 		},
 	}).Do()
 	if err != nil {
